@@ -36,6 +36,32 @@ var app = {
     onDeviceReady: function() {
         console.log('deviceready event');
         document.getElementById('regId').innerHTML = 'true';
+		app.push = PushNotification.init({
+     "android": {
+         "senderID": "286516895302"
+     },
+     "ios": {
+       "sound": true,
+       "vibration": true,
+       "badge": true
+     },
+     "windows": {}
+ });
+
+ app.push.on('registration', function(data) {
+     console.log("registration event: " + data.registrationId);
+     document.getElementById("regId").innerHTML = data.registrationId;
+     var oldRegId = localStorage.getItem('registrationId');
+     if (oldRegId !== data.registrationId) {
+         // Save new registration ID
+         localStorage.setItem('registrationId', data.registrationId);
+         // Post registrationId to your app server as the value has changed
+     }
+ });
+
+ app.push.on('error', function(e) {
+     console.log("push error = " + e.message);
+ });
     }
 };
 
